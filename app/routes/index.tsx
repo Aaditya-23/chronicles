@@ -1,3 +1,10 @@
+import { Navbar } from "~/layouts";
+
 export default function Index() {
-  return <div></div>;
+
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
 }
