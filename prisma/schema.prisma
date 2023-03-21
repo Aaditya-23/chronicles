@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,6 +20,7 @@ model User {
   preference       UserPreference @relation(fields: [userPreferenceId], references: [id])
   blogs            Blog[]         @relation("WrittenBlogs")
   likedBlogs       Blog[]         @relation("LikedBlogs")
+  bookmaredBlogs   Blog[]         @relation("BookmarkedBlogs")
   commentsPosted   Comment[]      @relation("CommentsPosted")
   commentsLiked    Comment[]      @relation("CommentsLiked")
   createdAt        DateTime       @default(now())
@@ -52,38 +50,34 @@ model Blog {
   title     String
   body      String
   tags      Tag[]
-  views     BigInt    @default(0)
+  views     Int       @default(0)
   authorId  String
   author    User      @relation("WrittenBlogs", fields: [authorId], references: [id])
   likes     User[]    @relation("LikedBlogs")
+  bookmarks User[]    @relation("BookmarkedBlogs")
   comments  Comment[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
 model Tag {
-  id          String   @id @default(uuid())
-  title       String   @unique
-  description String
-  color       String
-  blogs       Blog[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  title     String   @unique
+  blogs     Blog[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Comment {
-  id              String    @id @default(uuid())
-  body            String
-  blogId          String
-  blog            Blog      @relation(fields: [blogId], references: [id])
-  userId          String
-  user            User      @relation("CommentsPosted", fields: [userId], references: [id])
-  likes           User[]    @relation("CommentsLiked")
-  parentCommentId String?
-  parentComment   Comment?  @relation("CommentReply", fields: [parentCommentId], references: [id])
-  reply           Comment[] @relation("CommentReply")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  body      String
+  blogId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  userId    String
+  user      User     @relation("CommentsPosted", fields: [userId], references: [id])
+  likes     User[]   @relation("CommentsLiked")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum GENDER {
