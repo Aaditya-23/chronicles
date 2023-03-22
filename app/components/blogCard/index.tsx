@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client";
-import { Link, useSubmit } from "@remix-run/react";
+import { Link, useLocation, useSubmit } from "@remix-run/react";
 import type { fetchBlogs } from "~/server/models/blog.server";
 import { FiBookmark, FiHeart } from "react-icons/fi";
 import { formatDate } from "~/utils/formatDate";
@@ -23,6 +23,7 @@ export default function BlogCard(props: PropsTypes) {
     user: authenticatedUser,
   } = props;
 
+  const { pathname } = useLocation();
   const submit = useSubmit();
 
   const isBlogLiked =
@@ -38,6 +39,7 @@ export default function BlogCard(props: PropsTypes) {
   function handleBlogLike() {
     const formData = new FormData();
     formData.set("blogId", id);
+    formData.set("redirectTo", pathname);
 
     submit(formData, {
       method: "post",
@@ -48,6 +50,7 @@ export default function BlogCard(props: PropsTypes) {
   function handleBlogBookmark() {
     const formData = new FormData();
     formData.set("blogId", id);
+    formData.set("redirectTo", pathname);
 
     submit(formData, {
       method: "post",
@@ -63,7 +66,12 @@ export default function BlogCard(props: PropsTypes) {
     >
       <div className="flex gap-2 items-center">
         <Avatar userImage={userImage} userName={userName} />
-        <span className="text-sm font-medium">{userName}</span>
+        <Link
+          to={`/user/${userName}`}
+          className="text-sm font-medium hover:underline"
+        >
+          {userName}
+        </Link>
         <span className="text-sm">{formatDate(updatedAt)}</span>
       </div>
       <Link

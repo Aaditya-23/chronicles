@@ -115,7 +115,7 @@ export default function Signup() {
       </Form>
 
       <p className="mt-4 text-end capitalize text-sm text-gray-400">
-        already have an account? 
+        already have an account?
         <Link className="text-blue-400 underline font-medium" to="/signin">
           Signin
         </Link>
@@ -130,10 +130,7 @@ export async function action({ request }: ActionArgs) {
   const _action = formData.get("_action");
 
   invariant(typeof _action === "string", "_action is required");
-  invariant(
-    _action === "signup" || _action === "google" || _action === "github",
-    "invalid _action type"
-  );
+  invariant(_action === "signup", "invalid _action type");
 
   return signUp(payload);
 }

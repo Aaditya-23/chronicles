@@ -23,6 +23,8 @@ model User {
   bookmaredBlogs   Blog[]         @relation("BookmarkedBlogs")
   commentsPosted   Comment[]      @relation("CommentsPosted")
   commentsLiked    Comment[]      @relation("CommentsLiked")
+  followers        User[]         @relation("UserFollowing")
+  following        User[]         @relation("UserFollowing")
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 }

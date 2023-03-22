@@ -42,7 +42,7 @@ export default function Index() {
             }
             className=" text-lg font-semibold capitalize"
           >
-            relevant
+            top
           </NavLink>
 
           <NavLink
@@ -53,16 +53,6 @@ export default function Index() {
             className=" text-lg font-semibold capitalize"
           >
             following
-          </NavLink>
-
-          <NavLink
-            to="top"
-            style={({ isActive }) =>
-              isActive ? { color: "black" } : { color: "gray" }
-            }
-            className=" text-lg font-semibold capitalize"
-          >
-            top
           </NavLink>
         </nav>
 

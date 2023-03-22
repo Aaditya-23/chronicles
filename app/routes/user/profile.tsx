@@ -12,9 +12,9 @@ import { getUserDetails } from "~/utils/session.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userDetails = await getUserDetails(request);
-  if (userDetails === null) return redirect("signin");
+  if (userDetails === null) return redirect("/signin");
   const user = await getUsersProfile(userDetails.userName);
-  if (user === null) return redirect("signin");
+  if (user === null) return redirect("/signin");
   return json(user);
 }
 
@@ -28,7 +28,7 @@ export default function Profile() {
           id: user.id,
           userName: user.userName,
           userImage: user.profile.userImage,
-          firstName: user.firstName
+          firstName: user.firstName,
         }}
       />
 
@@ -63,20 +63,6 @@ export default function Profile() {
               to="account"
             >
               account
-            </NavLink>
-            <NavLink
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "black",
-                      textDecoration: "underline",
-                      textUnderlineOffset: "2px",
-                    }
-                  : { color: "gray" }
-              }
-              to="notifications"
-            >
-              notifications
             </NavLink>
           </nav>
         </aside>

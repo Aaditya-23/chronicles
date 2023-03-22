@@ -1,7 +1,13 @@
 import { db } from "~/utils/prisma.server";
-import { userSchema } from "../schemas/user.server";
+import {
+  newPasswordInput,
+  updateProfileSchema,
+  userSchema,
+} from "../schemas/user.server";
 import { compare, hash } from "bcrypt";
 import { z } from "zod";
+
+const saltRounds = 10;
 
 export async function newUser(input: any) {
   const data = userSchema
@@ -18,7 +24,6 @@ export async function newUser(input: any) {
 
   const { firstName, lastName, email, userName, password } = data;
 
-  const saltRounds = 10;
   const hashedPassword = await hash(password, saltRounds);
 
   const user = await db.user.create({
@@ -123,8 +128,110 @@ export async function getUsersProfile(userName: string) {
     },
     include: {
       profile: true,
+      bookmaredBlogs: {
+        include: {
+          likes: true,
+          bookmarks: true,
+          tags: true,
+          author: {
+            select: {
+              userName: true,
+              profile: { select: { userImage: true } },
+            },
+          },
+        },
+      },
+      followers: true,
     },
   });
 
   return user;
+}
+
+export async function toggleFollowing(authorId: string, followerId: string) {
+  if (!(await userExists(followerId))) throw "invalid followerId";
+
+  const author = await db.user.findUnique({
+    where: { id: authorId },
+    include: { followers: true },
+  });
+
+  if (author === null) throw new Error("invalid authorId");
+
+  const authorIsFollowed =
+    author.followers.filter((user) => user.id === followerId).length > 0
+      ? true
+      : false;
+
+  if (authorIsFollowed)
+    await db.user.update({
+      where: { id: authorId },
+      data: {
+        followers: {
+          disconnect: {
+            id: followerId,
+          },
+        },
+      },
+    });
+  else
+    await db.user.update({
+      where: { id: authorId },
+      data: {
+        followers: {
+          connect: {
+            id: followerId,
+          },
+        },
+      },
+    });
+}
+
+export async function updateUser(input: any, userId: string) {
+  const { firstName, lastName, location, work, bio, education } =
+    updateProfileSchema.parse(input);
+
+  await db.user.update({
+    where: { id: userId },
+    data: {
+      firstName,
+      lastName,
+      profile: {
+        update: {
+          bio,
+          location,
+          work,
+          education,
+        },
+      },
+    },
+  });
+}
+
+export async function changeUserPassword(input: any, userId: string) {
+  const data = newPasswordInput.parse(input);
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      hashedPassword: true,
+    },
+  });
+
+  if (user === null) throw new Error("no user found");
+
+  const doPasswordsMatch = await compare(data.oldPassword, user.hashedPassword);
+
+  if (!doPasswordsMatch) throw new Error("old password is incorrect");
+  else if (data.newPassword !== data.confirmPassword)
+    throw new Error("your passwords dont match");
+
+  const newHashedPassword = await hash(data.newPassword, saltRounds);
+
+  await db.user.update({
+    where: { id: userId },
+    data: {
+      hashedPassword: newHashedPassword,
+    },
+  });
 }

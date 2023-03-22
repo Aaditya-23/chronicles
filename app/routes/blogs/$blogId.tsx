@@ -11,7 +11,7 @@ import { Tag } from "~/components";
 import Comments from "~/features/comments";
 import invariant from "tiny-invariant";
 import { postComment, toggleLike } from "~/server/actions/comment.server";
-import { Form } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import { formatDate } from "~/utils/formatDate";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -67,13 +67,18 @@ export default function Blog() {
               <img src={blog.author.profile.userImage} alt="" />
             ) : (
               <div className="h-full w-full flex justify-center items-center text-white uppercase font-medium">
-                {blog.author.firstName.at(0)}
+                {blog.author.userName.at(0)}
               </div>
             )}
           </div>
 
           <div className="flex flex-col gap-px">
-            <span className="text-sm font-medium"> {blog.author.userName}</span>
+            <Link
+              to={`/user/${blog.author.userName}`}
+              className="text-sm font-medium hover:underline"
+            >
+              {blog.author.userName}
+            </Link>
             <span className="text-xs">{formatDate(blog.createdAt)}</span>
           </div>
         </header>

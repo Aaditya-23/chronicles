@@ -1,6 +1,6 @@
 import { Menu } from "@headlessui/react";
 import { motion } from "framer-motion";
-import { Link } from "@remix-run/react";
+import { Link, useSubmit } from "@remix-run/react";
 import { MdNotificationsNone } from "react-icons/md";
 import { Searchbar } from "~/components";
 import { CgProfile, CgBookmark } from "react-icons/cg";
@@ -37,7 +37,12 @@ export default function Navbar(props: NavbarProps) {
               userName={user.userName}
             />
           ) : (
-            <Link to="/signin" className="uppercase underline text-blue-400 font-medium">sign in</Link>
+            <Link
+              to="/signin"
+              className="uppercase underline text-blue-400 font-medium"
+            >
+              sign in
+            </Link>
           )}
         </li>
       </ul>
@@ -47,6 +52,14 @@ export default function Navbar(props: NavbarProps) {
 
 function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
   const { userImage, firstName, userName } = props;
+  const submit = useSubmit();
+
+  function handleLogout() {
+    submit(null, {
+      method: "post",
+      action: "/logout",
+    });
+  }
 
   return (
     <Menu as="div" className="relative">
@@ -55,7 +68,7 @@ function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
           <img src={userImage} alt="" className="h-full w-full object-cover" />
         ) : (
           <div className="h-full text-white uppercase font-medium flex items-center justify-center">
-            {firstName.at(0)}
+            {userName.at(0)}
           </div>
         )}
       </Menu.Button>
@@ -82,7 +95,7 @@ function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
         <Menu.Item as={Fragment}>
           {({ active }) => (
             <Link
-              to="#"
+              to="/user/savedblogs"
               className={`p-2 flex items-center gap-2 capitalize rounded  ${
                 active ? "bg-stone-700 text-white" : ""
               }`}
@@ -107,15 +120,15 @@ function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
         </Menu.Item>
         <Menu.Item as={Fragment}>
           {({ active }) => (
-            <Link
-              to="#"
-              className={`p-2 flex items-center gap-2 capitalize rounded  ${
+            <button
+              onClick={handleLogout}
+              className={`p-2 w-full flex items-center gap-2 capitalize rounded outline-none  ${
                 active ? "bg-stone-700 text-white" : ""
               }`}
             >
               <HiOutlineLogout size="1.3em" />
               logout
-            </Link>
+            </button>
           )}
         </Menu.Item>
       </Menu.Items>

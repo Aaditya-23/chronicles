@@ -4,12 +4,14 @@ import type { ActionArgs } from "@remix-run/node";
 import { TextField } from "~/components";
 import { useUser } from "./profile";
 import { HiPencil } from "react-icons/hi";
+import { getUserDetails } from "~/utils/session.server";
+import { updateUserProfile } from "~/server/actions/user.server";
 
 export default function Profile() {
   const user = useUser();
 
   return (
-    <Form className="flex flex-col gap-3">
+    <Form method="post" className="flex flex-col gap-3">
       <button
         type="button"
         className="w-16 aspect-square self-center bg-black rounded-full relative group text-2xl font-bold outline-none overflow-hidden"
@@ -83,4 +85,10 @@ export default function Profile() {
   );
 }
 
-export async function action({ request }: ActionArgs) {}
+export async function action({ request }: ActionArgs) {
+  const formData = await request.formData();
+  const payload = Object.fromEntries(formData);
+  const userDetails = await getUserDetails(request);
+
+  return updateUserProfile(payload, userDetails?.id || "");
+}
