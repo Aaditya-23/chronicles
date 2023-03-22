@@ -2,16 +2,16 @@ import { Menu } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { Link, useSubmit } from "@remix-run/react";
 import { MdNotificationsNone } from "react-icons/md";
-import { Searchbar } from "~/components";
 import { CgProfile, CgBookmark } from "react-icons/cg";
 import { HiPencil, HiOutlineLogout } from "react-icons/hi";
 import { Fragment } from "react";
+import { FiSearch } from "react-icons/fi";
 
 export default function Navbar(props: NavbarProps) {
   const { user } = props;
 
   return (
-    <nav>
+    <nav className="drop-shadow">
       <ul className="flex p-2 justify-between items-center gap-3">
         <li>
           <h1 className="font-pacifico text-2xl uppercase">
@@ -22,7 +22,9 @@ export default function Navbar(props: NavbarProps) {
         </li>
 
         <li className="ml-auto">
-          <Searchbar />
+          <Link to="search">
+            <FiSearch />
+          </Link>
         </li>
 
         <li>
@@ -51,7 +53,7 @@ export default function Navbar(props: NavbarProps) {
 }
 
 function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
-  const { userImage, firstName, userName } = props;
+  const { userImage, userName } = props;
   const submit = useSubmit();
 
   function handleLogout() {
