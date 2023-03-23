@@ -1,11 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
-import {
-  NavLink,
-  Outlet,
-  useLoaderData,
-  useOutletContext,
-} from "@remix-run/react";
+import { NavLink, Outlet, useOutletContext } from "@remix-run/react";
+import { typedjson, useTypedLoaderData, redirect } from "remix-typedjson";
 import { Navbar } from "~/layouts";
 import { getUsersProfile } from "~/server/models/user.server";
 import { getUserDetails } from "~/utils/session.server";
@@ -15,11 +10,11 @@ export async function loader({ request }: LoaderArgs) {
   if (userDetails === null) return redirect("/signin");
   const user = await getUsersProfile(userDetails.userName);
   if (user === null) return redirect("/signin");
-  return json(user);
+  return typedjson(user);
 }
 
 export default function Profile() {
-  const user = useLoaderData<typeof loader>();
+  const user = useTypedLoaderData<typeof loader>();
 
   return (
     <div>
@@ -27,8 +22,11 @@ export default function Profile() {
         user={{
           id: user.id,
           userName: user.userName,
-          userImage: user.profile.userImage,
+          profile: {
+            userImage: user.profile.userImage,
+          },
           firstName: user.firstName,
+          notificationList: user.notificationList,
         }}
       />
 

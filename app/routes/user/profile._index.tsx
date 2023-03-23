@@ -1,9 +1,7 @@
 import { Form } from "@remix-run/react";
 import type { ActionArgs } from "@remix-run/node";
-// import {  } from "@remix-run/node";
 import { TextField } from "~/components";
 import { useUser } from "./profile";
-import { HiPencil } from "react-icons/hi";
 import { getUserDetails } from "~/utils/session.server";
 import { updateUserProfile } from "~/server/actions/user.server";
 
@@ -20,17 +18,13 @@ export default function Profile() {
           <img
             src="/assets/earth.jpg"
             alt="avatar"
-            className="w-full aspect-square group-focus:blur-[2px] group-hover:blur-[2px]"
+            className="w-full aspect-square"
           />
         ) : (
-          <span className="w-full aspect-square flex justify-center items-center uppercase text-white group-hover:text-transparent group-focus:text-transparent">
+          <span className="w-full aspect-square flex justify-center items-center uppercase text-white">
             {user.userName.at(0)}
           </span>
         )}
-
-        <span className="absolute top-0 left-0 w-full aspect-square flex justify-center items-center text-transparent group-hover:text-white group-focus:text-white">
-          <HiPencil />
-        </span>
       </button>
 
       <div className="flex gap-3">

@@ -10,7 +10,7 @@ export async function createNewBlog(input: any, userId: string) {
   const { title, body } = data;
   const tags = data.tags?.split(",");
 
-  await db.blog.create({
+  const blog = await db.blog.create({
     data: {
       title,
       body,
@@ -27,6 +27,38 @@ export async function createNewBlog(input: any, userId: string) {
     select: {
       id: true,
     },
+  });
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      userName: true,
+      followers: {
+        select: {
+          id: true,
+          notificationList: true,
+        },
+      },
+    },
+  });
+
+  if (user === null) return;
+
+  const message = `${user.userName} published a new blog`;
+  const url = `/blogs/${blog.id}`;
+
+  user.followers.forEach(async (user) => {
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        notificationList: {
+          create: {
+            message,
+            url,
+          },
+        },
+      },
+    });
   });
 }
 

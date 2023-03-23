@@ -1,17 +1,18 @@
 import { Menu } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { Link, useSubmit } from "@remix-run/react";
-import { MdNotificationsNone } from "react-icons/md";
 import { CgProfile, CgBookmark } from "react-icons/cg";
 import { HiPencil, HiOutlineLogout } from "react-icons/hi";
 import { Fragment } from "react";
 import { FiSearch } from "react-icons/fi";
+import NotificationList from "~/features/notificationList";
+import { Prisma } from "@prisma/client";
 
 export default function Navbar(props: NavbarProps) {
   const { user } = props;
 
   return (
-    <nav className="drop-shadow">
+    <nav>
       <ul className="flex p-2 justify-between items-center gap-3">
         <li>
           <h1 className="font-pacifico text-2xl uppercase">
@@ -27,17 +28,15 @@ export default function Navbar(props: NavbarProps) {
           </Link>
         </li>
 
-        <li>
-          <MdNotificationsNone size="1.3em" />
-        </li>
+        {user && (
+          <li>
+            <NotificationList notifications={user.notificationList} />
+          </li>
+        )}
 
         <li>
           {user ? (
-            <User
-              userImage={user.userImage}
-              firstName={user.firstName}
-              userName={user.userName}
-            />
+            <User userImage={user.profile.userImage} userName={user.userName} />
           ) : (
             <Link
               to="/signin"
@@ -52,7 +51,7 @@ export default function Navbar(props: NavbarProps) {
   );
 }
 
-function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
+function User(props: { userImage: string | null; userName: string }) {
   const { userImage, userName } = props;
   const submit = useSubmit();
 
@@ -138,11 +137,22 @@ function User(props: Omit<NonNullable<NavbarProps["user"]>, "id">) {
   );
 }
 
+const UserWithNotifications = Prisma.validator<Prisma.UserArgs>()({
+  include: {
+    notificationList: true,
+    profile: {
+      select: {
+        userImage: true,
+      },
+    },
+  },
+});
+
+type UserType = Prisma.UserGetPayload<typeof UserWithNotifications>;
+
 interface NavbarProps {
-  user: {
-    id: string;
-    userName: string;
-    userImage: string | null;
-    firstName: string;
-  } | null;
+  user: Pick<
+    UserType,
+    "id" | "userName" | "firstName" | "profile" | "notificationList"
+  > | null;
 }

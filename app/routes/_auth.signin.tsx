@@ -1,10 +1,16 @@
 import type { ActionArgs } from "@remix-run/node";
-import { Form, Link, useNavigation } from "@remix-run/react";
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import { useEffect } from "react";
 import { TextField } from "~/features/form";
 import { signIn } from "~/server/actions/user.server";
 
 export default function Signin() {
   const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
+
+  useEffect(() => {
+    if (actionData !== undefined) alert(actionData.error);
+  }, [actionData]);
 
   return (
     <>

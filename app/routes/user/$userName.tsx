@@ -64,8 +64,11 @@ export default function User() {
             ? {
                 id: loggedInUser.id,
                 firstName: loggedInUser.firstName,
-                userImage: loggedInUser.profile.userImage,
+                profile: {
+                  userImage: loggedInUser.profile.userImage,
+                },
                 userName: loggedInUser.userName,
+                notificationList: loggedInUser.notificationList,
               }
             : null
         }

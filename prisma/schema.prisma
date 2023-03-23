@@ -8,25 +8,26 @@ datasource db {
 }
 
 model User {
-  id               String         @id @default(uuid())
-  userName         String         @unique
+  id               String                    @id @default(uuid())
+  userName         String                    @unique
   firstName        String
   lastName         String
-  email            String         @unique
+  email            String                    @unique
   hashedPassword   String
-  userProfileId    String         @unique
-  profile          UserProfile    @relation(fields: [userProfileId], references: [id])
-  userPreferenceId String         @unique
-  preference       UserPreference @relation(fields: [userPreferenceId], references: [id])
-  blogs            Blog[]         @relation("WrittenBlogs")
-  likedBlogs       Blog[]         @relation("LikedBlogs")
-  bookmaredBlogs   Blog[]         @relation("BookmarkedBlogs")
-  commentsPosted   Comment[]      @relation("CommentsPosted")
-  commentsLiked    Comment[]      @relation("CommentsLiked")
-  followers        User[]         @relation("UserFollowing")
-  following        User[]         @relation("UserFollowing")
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  userProfileId    String                    @unique
+  profile          UserProfile               @relation(fields: [userProfileId], references: [id])
+  userPreferenceId String                    @unique
+  preference       UserPreference            @relation(fields: [userPreferenceId], references: [id])
+  blogs            Blog[]                    @relation("WrittenBlogs")
+  likedBlogs       Blog[]                    @relation("LikedBlogs")
+  bookmaredBlogs   Blog[]                    @relation("BookmarkedBlogs")
+  commentsPosted   Comment[]                 @relation("CommentsPosted")
+  commentsLiked    Comment[]                 @relation("CommentsLiked")
+  followers        User[]                    @relation("UserFollowing")
+  following        User[]                    @relation("UserFollowing")
+  notificationList BlogPublishNotification[] @relation("UserNotificationList")
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
 }
 
 model UserProfile {
@@ -80,6 +81,15 @@ model Comment {
   likes     User[]   @relation("CommentsLiked")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model BlogPublishNotification {
+  id             String   @id @default(uuid())
+  message        String
+  url            String
+  userId         String
+  user           User     @relation("UserNotificationList", fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
 }
 
 enum GENDER {

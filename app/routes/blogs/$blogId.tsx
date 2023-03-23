@@ -53,8 +53,11 @@ export default function Blog() {
             ? {
                 id: user.id,
                 firstName: user.firstName,
-                userImage: user.profile.userImage,
+                profile: {
+                  userImage: user.profile.userImage,
+                },
                 userName: user.userName,
+                notificationList: user.notificationList,
               }
             : null
         }

@@ -1,5 +1,6 @@
 import {
   changeUserPassword,
+  clearUserNotificationList,
   newUser,
   newUserSession,
   toggleFollowing,
@@ -99,6 +100,20 @@ export async function changePassword(input: any, userId: string | undefined) {
     } else if (error instanceof Error) {
       return json({ error: error.message }, { status: 400 });
     }
+
+    throw error;
+  }
+}
+
+export async function clearNotifications(userId: string | undefined) {
+  try {
+    if (userId === undefined) throw new Error("invalid user");
+
+    await clearUserNotificationList(userId);
+    return json(null, { status: 200 });
+  } catch (error) {
+    if (error instanceof Error)
+      return json({ error: error.message }, { status: 400 });
 
     throw error;
   }

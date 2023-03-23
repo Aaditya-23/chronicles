@@ -25,9 +25,10 @@ export default function SavedBlogs() {
       <Navbar
         user={{
           id: user.id,
-          userImage: user.profile.userImage,
+          profile: { userImage: user.profile.userImage },
           userName: user.userName,
           firstName: user.firstName,
+          notificationList: user.notificationList,
         }}
       />
 

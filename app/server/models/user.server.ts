@@ -142,6 +142,7 @@ export async function getUsersProfile(userName: string) {
         },
       },
       followers: true,
+      notificationList: true,
     },
   });
 
@@ -232,6 +233,19 @@ export async function changeUserPassword(input: any, userId: string) {
     where: { id: userId },
     data: {
       hashedPassword: newHashedPassword,
+    },
+  });
+}
+
+export async function clearUserNotificationList(userId: string) {
+  if (!(await userExists(userId))) throw new Error("no user found");
+
+  await db.user.update({
+    where: { id: userId },
+    data: {
+      notificationList: {
+        deleteMany: {},
+      },
     },
   });
 }

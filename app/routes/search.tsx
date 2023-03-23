@@ -34,8 +34,11 @@ export default function Search() {
             ? {
                 firstName: user.firstName,
                 id: user.id,
-                userImage: user.profile.userImage,
+                profile: {
+                  userImage: user.profile.userImage,
+                },
                 userName: user.userName,
+                notificationList: user.notificationList,
               }
             : null
         }

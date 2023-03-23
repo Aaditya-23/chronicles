@@ -1,12 +1,12 @@
-import { NavLink } from "@remix-run/react";
 import { Navbar } from "~/layouts";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 import { fetchBlogs } from "~/server/models/blog.server";
 import { BlogCard } from "~/components";
 import { getUserDetails } from "~/utils/session.server";
 import { typedjson } from "remix-typedjson";
 import { useTypedLoaderData } from "remix-typedjson/dist/remix";
 import { getUsersProfile } from "~/server/models/user.server";
+import { clearNotifications } from "~/server/actions/user.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userDetails = await getUserDetails(request);
@@ -26,36 +26,17 @@ export default function Index() {
             ? {
                 id: user.id,
                 firstName: user.firstName,
-                userImage: user.profile.userImage,
+                profile: {
+                  userImage: user.profile.userImage,
+                },
                 userName: user.userName,
+                notificationList: user.notificationList,
               }
             : null
         }
       />
 
       <main className="p-3">
-        <nav className="my-3 flex gap-2">
-          <NavLink
-            to=""
-            style={({ isActive }) =>
-              isActive ? { color: "black" } : { color: "gray" }
-            }
-            className=" text-lg font-semibold capitalize"
-          >
-            top
-          </NavLink>
-
-          <NavLink
-            to="following"
-            style={({ isActive }) =>
-              isActive ? { color: "black" } : { color: "gray" }
-            }
-            className=" text-lg font-semibold capitalize"
-          >
-            following
-          </NavLink>
-        </nav>
-
         <div className="grid grid-cols-4 gap-x-3 gap-y-5">
           {blogs.map((blog, index) => (
             <BlogCard
@@ -69,4 +50,10 @@ export default function Index() {
       </main>
     </div>
   );
+}
+
+export async function action({ request }: ActionArgs) {
+  const userDetails = await getUserDetails(request);
+
+  return clearNotifications(userDetails?.id);
 }
