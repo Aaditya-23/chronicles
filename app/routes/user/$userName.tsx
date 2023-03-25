@@ -76,7 +76,10 @@ export default function User() {
 
       <main className="mt-7 p-2">
         <div className="shadow rounded-2xl overflow-hidden pb-2">
-          <Avatar />
+          <Avatar
+            userName={requestedUserProfile.userName}
+            userImage={requestedUserProfile.profile.userImage}
+          />
           <div className="px-6 flex flex-col gap-2">
             <div className="mb-5 flex justify-center gap-5">
               <span className="text-sm flex items-center gap-2">
@@ -133,7 +136,7 @@ export default function User() {
         <div className="mt-5 flex flex-col gap-3">
           <h1 className="text-xl capitalize font-medium">recent blogs</h1>
 
-          <div>
+          <div className="space-y-4">
             {blogs.map((blog, index) => (
               <BlogCard
                 key={index}
@@ -149,7 +152,9 @@ export default function User() {
   );
 }
 
-function Avatar() {
+function Avatar(props: { userName: string; userImage: string | null }) {
+  const { userName, userImage } = props;
+
   return (
     <div
       style={{
@@ -158,11 +163,21 @@ function Avatar() {
       }}
       className="mb-16 h-40 relative"
     >
-      <img
+      {/* <img
         src="/assets/earth.jpg"
         alt="user"
-        className="w-24 rounded-full object-cover absolute left-6 bottom-0 translate-y-1/2 ring-4 ring-white"
-      />
+        className="object-cover "
+      /> */}
+
+      <div className="w-24 rounded-full aspect-square bg-black absolute left-6 bottom-0 translate-y-1/2 ring-4 ring-white">
+        {userImage ? (
+          <img src={userImage} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full text-white text-3xl uppercase font-medium flex items-center justify-center">
+            {userName.at(0)}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
