@@ -23,7 +23,7 @@ export default function Navbar(props: NavbarProps) {
         </li>
 
         <li className="ml-auto">
-          <Link to="search">
+          <Link to="/search">
             <FiSearch />
           </Link>
         </li>
