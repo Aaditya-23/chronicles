@@ -18,7 +18,7 @@ export default function Write() {
     <div>
       <Header />
       <main className="mx-auto w-9/12 ">
-        <Editor tags={tags} />
+        {/* <Editor tags={tags} /> */}
       </main>
     </div>
   );
