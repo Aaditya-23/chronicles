@@ -163,12 +163,6 @@ function Avatar(props: { userName: string; userImage: string | null }) {
       }}
       className="mb-16 h-40 relative"
     >
-      {/* <img
-        src="/assets/earth.jpg"
-        alt="user"
-        className="object-cover "
-      /> */}
-
       <div className="w-24 rounded-full aspect-square bg-black absolute left-6 bottom-0 translate-y-1/2 ring-4 ring-white">
         {userImage ? (
           <img src={userImage} alt="" className="h-full w-full object-cover" />
