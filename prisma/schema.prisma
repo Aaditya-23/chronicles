@@ -68,7 +68,7 @@ model Blog {
 
 model Tag {
   id        String   @id @default(uuid())
-  title     String   @unique
+  title     String   @unique @db.VarChar(100)
   blogs     Blog[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
