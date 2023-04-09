@@ -51,8 +51,8 @@ model UserPreference {
 
 model Blog {
   id        String    @id @default(uuid())
-  title     String
-  body      String
+  title     String    @db.Text
+  body      String    @db.LongText
   tags      Tag[]
   views     Int       @default(0)
   authorId  String
